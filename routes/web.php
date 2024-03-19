@@ -58,7 +58,7 @@ $tasks = [
   ),
 ];
 
-//automatically redirect to tasks.index
+//自動的に tasks.index にリダイレクトする
 Route::get('/',function(){
     return redirect()->route('tasks.index');
 });
@@ -66,9 +66,18 @@ Route::get('/',function(){
 
 
 //passing an array to the route.
-Route::get('/tasks', function () use($tasks){
+Route::get('/tasks', function (){
     return view('index', [
-        'tasks' => $tasks
+      // all()：全てのタスクを取得
+        // 'tasks' => \App\Models\Task::all()
+
+      // 最新のタスクを順序で表示
+        'tasks' => \App\Models\Task::latest()->get()
+
+      //達成しているタスクのみ表示 ：DBでCOMPLETED列がTRUEの場合
+      // 'tasks' => \App\Models\Task::latest()->where('completed',true)->get()
+
+
     ]);
 })->name('tasks.index');
 //you should have some common prefix of a route name if the route is revolving 
@@ -76,18 +85,13 @@ Route::get('/tasks', function () use($tasks){
 //in the case above,that is a task and the route that displays a list of elements should list of elements should be called "index".
 
 
-//needs to put use statement here to be able to read those tasks
-Route::get('/tasks/{id}',function($id) use ($tasks){
-    //since we want only one task here using specific ID 
-    //there is a handy function called "collect" which will convert a raise to a laravel collection object.it allows you to called methods.
-    $task = collect($tasks)->firstWhere('id',$id);
-    //if this will be found
-    if(!$task){
-        //abort function to stop the request
-        abort(Response::HTTP_NOT_FOUND);
-    }
 
-    return view('show',['task'=>$task]);
+Route::get('/tasks/{id}',function($id) {
+//find() lets you fetch a record from database, one single row but its primary key.
+
+// findOrFail($id) :
+// 指定された主キーに対応するレコードをデータベースから取得します。レコードが見つからない場合は、ModelNotFoundException　404エラー がスローされます。
+    return view('show',['task'=> \App\Models\Task::findOrFail($id)]);
 })->name('tasks.show');
 //the route that display one single element should be called "SHOW" suffix.
 
