@@ -71,7 +71,6 @@ Route::post('/tasks',function(Request $request){
     // もし不正があれば、laravelは強制的に前のページに戻ってエラーを表示する
   ]);
 
-
   // 新しいタスクを作成
   //クラスをインポートされていればクラス名だけで記述可能。
   //$task = new App\Models\Task; を下のように記述可能
@@ -87,7 +86,10 @@ Route::post('/tasks',function(Request $request){
   // save() メソッドは、Eloquent モデルの新しいレコードをデータベースに保存する場合や、既存のレコードの変更を保存する場合に使用されます。
   $task->save();
   //tasks.show という名前のルートにリダイレクトしている
-  return redirect()->route('tasks.show',['id' => $task->id]);
+  return redirect()->route('tasks.show',['id' => $task->id])
+  // ↑が実行されたらflash messageを表示
+  // ->with('success', 'Task created successfully') は、リダイレクト先のビューに success キーでメッセージをセットしています。これにより、ビューで session('success') を使用してメッセージを取得できます。
+  ->with('success','Task created successfully');
 })->name('tasks.store');
 
 
