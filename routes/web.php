@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
@@ -76,33 +77,41 @@ Route::get('/tasks', function (){
 
       //達成しているタスクのみ表示 ：DBでCOMPLETED列がTRUEの場合
       // 'tasks' => \App\Models\Task::latest()->where('completed',true)->get()
-
-
     ]);
+    //nameをつけることで中身を変えてもそのまま使用することができるので便利。
 })->name('tasks.index');
 //you should have some common prefix of a route name if the route is revolving 
 //around certain resource.
-//in the case above,that is a task and the route that displays a list of elements should list of elements should be called "index".
+//複数の要素があるページの場合、INDEXをファイル名にすることが一般的。
 
 
 
+//タスクを追加するするフォームの表示　
+//もし追加のデータの取得する必要がない場合がGETメソッドを使わず、ROUTEにVIEWを使用すれば良い
+// 第一引数はURLを渡して
+// 第二引数はVIEWのファイル名を渡す
+Route::view('/tasks/create','create')
+  ->name('tasks.create'); 
+
+
+
+
+//リンクの後にパラメータを使用する場合は順番的に先に読み込まれて他のROUTEがエラーになるため、最後に記述する必要がる。
 Route::get('/tasks/{id}',function($id) {
-//find() lets you fetch a record from database, one single row but its primary key.
-
-// findOrFail($id) :
-// 指定された主キーに対応するレコードをデータベースから取得します。レコードが見つからない場合は、ModelNotFoundException　404エラー がスローされます。
-    return view('show',['task'=> \App\Models\Task::findOrFail($id)]);
-})->name('tasks.show');
-//the route that display one single element should be called "SHOW" suffix.
-
-
+  //find() lets you fetch a record from database, one single row but its primary key.
+  
+  // findOrFail($id) :
+  // 指定された主キーに対応するレコードをデータベースから取得します。レコードが見つからない場合は、ModelNotFoundException　404エラー がスローされます。
+      return view('show',['task'=> \App\Models\Task::findOrFail($id)]);
+  })->name('tasks.show');
+  //ROUTEで中身が単体だけを表示する場合’SHOW’のファイル名を使用するのが一般的
 
 
-
-
-
-
-
+  // Request $request を使用する場合クラスをインポートする必要がある
+  // Request $request を使用することで送られてきたデータをアクセスすることができる。
+Route::post('/tasks',function(Request $request){
+  dd($request->all());
+})->name('tasks.store');
 
 
 
