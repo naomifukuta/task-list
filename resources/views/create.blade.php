@@ -25,7 +25,11 @@
             <label for="title">
                 Title
             </label>
-            <input type="text" name="title" id="title">
+
+            {{-- 
+                value="{{ old('title') }}" :以前のリクエストで title フィールドに入力された値がある場合、その値を表示します。バリデーションエラーが発生した場合、この入力フィールドは以前の入力値を保持します。 --}}
+            <input type="text" name="title" id="title" value="{{ old('title') }}">
+
             {{-- エラーの表示 --}}
             @error('title')
                 <p class="error-message">{{ $message }}</p>
@@ -33,8 +37,8 @@
         </div>
 
         <div>
-            <label for="desciption">desciption</label>
-            <textarea name="description" id="description"  rows="5">
+            <label for="desciption">description</label>
+            <textarea name="description" id="description"  rows="5"> {{ old('description') }}
             </textarea>
 
             @error('description')
@@ -43,8 +47,9 @@
         </div>
 
         <div>
-            <label for="long_desciption">desciption</label>
+            <label for="long_desciption">description</label>
             <textarea name="long_description" id="long_description"  rows="10">
+               {{ old('long_description') }}
             </textarea>
 
             @error('long_description')
