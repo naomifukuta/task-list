@@ -13,6 +13,7 @@
     <div>
         @if(session()->has('success'))
         <div>{{ session('success') }}</div>
+        @endif
     </div>
     <div>
         @yield('content')  

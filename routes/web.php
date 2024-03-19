@@ -45,21 +45,29 @@ Route::view('/tasks/create','create')
 
 
 
+
+// タスクの編集 フォーム
+Route::get('/tasks/{id}/edit', function ($id) {
+  return view('edit', [
+      'task' => Task::findOrFail($id)
+  ]);
+})->name('tasks.edit');
+    
+
 //リンクの後にパラメータを使用する場合は順番的に先に読み込まれて他のROUTEがエラーになるため、最後に記述する必要がる。
 Route::get('/tasks/{id}',function($id) {
   //find() lets you fetch a record from database, one single row but its primary key.
   
   // findOrFail($id) :
   // 指定された主キーに対応するレコードをデータベースから取得します。レコードが見つからない場合は、ModelNotFoundException　404エラー がスローされます。
-      return view('show',['task'=> Task::findOrFail($id)]);
+  return view('show',['task'=> Task::findOrFail($id)]);
       //ROUTEで中身が単体だけを表示する場合’SHOW’のファイル名を使用するのが一般的
-  })->name('tasks.show');
+})->name('tasks.show');
   
 
 
-
-  // Request $request を使用する場合クラスをインポートする必要がある
-  // Request $request を使用することで送られてきたデータをアクセスすることができる。
+// Request $request を使用する場合クラスをインポートする必要がある
+// Request $request を使用することで送られてきたデータをアクセスすることができる。
 Route::post('/tasks',function(Request $request){
   //データの検証
   $data = $request->validate([
@@ -91,6 +99,30 @@ Route::post('/tasks',function(Request $request){
   // ->with('success', 'Task created successfully') は、リダイレクト先のビューに success キーでメッセージをセットしています。これにより、ビューで session('success') を使用してメッセージを取得できます。
   ->with('success','Task created successfully');
 })->name('tasks.store');
+
+
+Route::put('/tasks/{id}', function($id, Request $request) {
+  // データの検証
+  $data = $request->validate([
+      'title' => 'required|max:255',
+      'description' => 'required',
+      'long_description' => 'required',
+  ]);
+
+  // タスクを取得し、存在しない場合は404エラーを返す
+  $task = Task::findOrFail($id);
+
+  // タスクの各フィールドに新しい値を設定
+  $task->title = $data['title'];
+  $task->description = $data['description'];
+  $task->long_description = $data['long_description'];
+
+  // 変更を保存し、データベースを更新
+  $task->save();
+
+  // タスクの詳細を表示するためのルートにリダイレクトし、成功のフラッシュメッセージをセット
+  return redirect()->route('tasks.show', ['id' => $task->id])->with('success', 'Task updated successfully');
+})->name('tasks.update');
 
 
 
