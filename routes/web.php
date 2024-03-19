@@ -1,63 +1,12 @@
 <?php
 
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 
 
 //create dummy task 
-class Task
-{
-  public function __construct(
-    public int $id,
-    public string $title,
-    public string $description,
-    public ?string $long_description, //the ? makes teh property optional
-    public bool $completed,
-    public string $created_at,
-    public string $updated_at
-  ) {
-  }
-}
-
-$tasks = [
-  new Task(
-    1,
-    'Buy groceries',
-    'Task 1 description',
-    'Task 1 long description',
-    false,
-    '2023-03-01 12:00:00',
-    '2023-03-01 12:00:00'
-  ),
-  new Task(
-    2,
-    'Sell old stuff',
-    'Task 2 description',
-    null,
-    false,
-    '2023-03-02 12:00:00',
-    '2023-03-02 12:00:00'
-  ),
-  new Task(
-    3,
-    'Learn programming',
-    'Task 3 description',
-    'Task 3 long description',
-    true,
-    '2023-03-03 12:00:00',
-    '2023-03-03 12:00:00'
-  ),
-  new Task(
-    4,
-    'Take dogs for a walk',
-    'Task 4 description',
-    null,
-    false,
-    '2023-03-04 12:00:00',
-    '2023-03-04 12:00:00'
-  ),
-];
 
 //自動的に tasks.index にリダイレクトする
 Route::get('/',function(){
@@ -102,15 +51,43 @@ Route::get('/tasks/{id}',function($id) {
   
   // findOrFail($id) :
   // 指定された主キーに対応するレコードをデータベースから取得します。レコードが見つからない場合は、ModelNotFoundException　404エラー がスローされます。
-      return view('show',['task'=> \App\Models\Task::findOrFail($id)]);
+      return view('show',['task'=> Task::findOrFail($id)]);
+      //ROUTEで中身が単体だけを表示する場合’SHOW’のファイル名を使用するのが一般的
   })->name('tasks.show');
-  //ROUTEで中身が単体だけを表示する場合’SHOW’のファイル名を使用するのが一般的
+  
+
 
 
   // Request $request を使用する場合クラスをインポートする必要がある
   // Request $request を使用することで送られてきたデータをアクセスすることができる。
 Route::post('/tasks',function(Request $request){
-  dd($request->all());
+  //データの検証
+  $data = $request->validate([
+    // 'フォーム内のname' => '検証のルール'
+    'title' => 'required|max:255',
+    'description' => 'required',
+    'long_description' => 'required',
+    //検証に問題がなければ$dataに配列としてデータが格納される。
+    // もし不正があれば、laravelは強制的に前のページに戻ってエラーを表示する
+  ]);
+
+
+  // 新しいタスクを作成
+  //クラスをインポートされていればクラス名だけで記述可能。
+  //$task = new App\Models\Task; を下のように記述可能
+
+  // モデルのTaskクラスをインスタンス化
+  $task = new Task;
+  // タスクのプロパティをセット
+  // $data['title']をモデルのTaskクラスにtitleって名前で格納。
+  $task->title = $data['title'];
+  $task->description = $data['description'];
+  $task->long_description = $data['long_description'];
+
+  // save() メソッドは、Eloquent モデルの新しいレコードをデータベースに保存する場合や、既存のレコードの変更を保存する場合に使用されます。
+  $task->save();
+  //tasks.show という名前のルートにリダイレクトしている
+  return redirect()->route('tasks.show',['id' => $task->id]);
 })->name('tasks.store');
 
 
