@@ -126,6 +126,16 @@ Route::delete('/tasks/{task}',function(Task $task){
 })->name('tasks.destroy');
 
 
+Route::put('tasks/{task}/toggle-complete',function(Task $task){
+  //↓はTask.phpに記述したため不要
+  // $task->completed = !$task->completed;
+  // $task->save();
+  // で↓のような書き方をすれば良い。
+  $task->toggleComplete();
+
+
+  return redirect()->back()->with('success','Task updated successfully');
+})->name('tasks.toggle-complete');
 
 
 // Route::get('/hello',function() {

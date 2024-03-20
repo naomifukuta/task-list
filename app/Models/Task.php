@@ -13,6 +13,12 @@ class Task extends Model
     protected $fillable = ['title','description','long_description'];
     // ↓は$fillableの逆
     // protected $guarded = ['secret'];
+
+    public function toggleComplete(){
+
+        $this->completed = !$this->completed;
+        $this->save();
+    }
 }
 
 
