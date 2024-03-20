@@ -17,6 +17,7 @@
 <p>{{ $task->updated_at}}</p>
 
 
+
 <div>
     <form action="{{ route('tasks.destroy',['task' => $task->id ])}}" method="POST">
     @csrf

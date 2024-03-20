@@ -13,7 +13,7 @@
 
 @section('content')
 
-    {{-- {{ $errors }} を記述することでフォームのエラーの内容が表示される　var_dump()のように。。　--}}
+    {{-- {{ $errors }} を記述することでフォームのエラーの内容が表示される　var_dump()のように。。　 --}}
     {{-- フォームには必ずVALIDATIONをセットした方が良い --}}
     <form action="{{ route('tasks.store') }}" method="post">
         {{-- 

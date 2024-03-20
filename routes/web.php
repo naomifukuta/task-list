@@ -23,7 +23,10 @@ Route::get('/tasks', function (){
         // 'tasks' => \App\Models\Task::all()
 
       // 最新のタスクを順序で表示
-        'tasks' => \App\Models\Task::latest()->get()
+        // 'tasks' => \App\Models\Task::latest()->get()
+      //⇧のGET（）をPAGINATEに変えてもGET()もしつつGET（）した値をPAGINATEする
+      //リンクも自動で生成してくれる
+      'tasks' => \App\Models\Task::latest()->paginate(10)
 
       //達成しているタスクのみ表示 ：DBでCOMPLETED列がTRUEの場合
       // 'tasks' => \App\Models\Task::latest()->where('completed',true)->get()
