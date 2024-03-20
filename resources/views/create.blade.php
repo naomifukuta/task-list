@@ -47,7 +47,7 @@
         </div>
 
         <div>
-            <label for="long_desciption">description</label>
+            <label for="long_desciption" class="mb-4">description</label>
             <textarea name="long_description" id="long_description"  rows="10">
                {{ old('long_description') }}
             </textarea>
@@ -57,8 +57,8 @@
             @enderror
         </div>
 
-        <div>
-            <button type="submit">Add Task</button>
+        <div class="flex items-center gap-2">
+            <button type="submit" class="btn">Add Task</button>
         </div>
 
 

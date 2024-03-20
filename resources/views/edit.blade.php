@@ -19,10 +19,11 @@
             <label for="title">
                 Title
             </label>
-            <input type="text" name="title" id="title" value=" {{$task->title}}">
+            <input type="text" name="title" id="title" 
+            value=" {{$task->title}}">
             {{-- エラーの表示 --}}
             @error('title')
-                <p class="error-message">{{ $message }}</p>
+                <p class="error">{{ $message }}</p>
             @enderror
         </div>
 
@@ -33,11 +34,11 @@
             </textarea>
 
             @error('description')
-                <p class="error-message">{{ $message }}</p>
+                <p class="error">{{ $message }}</p>
             @enderror
         </div>
 
-        <div>
+        <div class="mb-4">
             <label for="long_desciption">long desciption</label>
             <textarea name="long_description" id="long_description"  rows="10">
                 {{ $task->long_description }}
@@ -45,12 +46,13 @@
             </textarea>
 
             @error('long_description')
-             <p class="error-message"> {{ $message }}</p>
+             <p class="error"> {{ $message }}</p>
             @enderror
         </div>
 
-        <div>
-            <button type="submit">Edit Task</button>
+        <div class="flex items-center gap-2">
+            <button type="submit" class="btn">Edit Task</button>
+            <a href="{{route('tasks.index')}}" class="link">Cancel</a>
         </div>
 
 
