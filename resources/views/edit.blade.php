@@ -17,7 +17,7 @@
 
     {{-- {{ $errors }} を記述することでフォームのエラーの内容が表示される　var_dump()のように。。　--}}
     {{-- フォームには必ずVALIDATIONをセットした方が良い --}}
-    <form action="{{ route('tasks.update',['id' => $task->id]) }}" method="post">
+    <form action="{{ route('tasks.update',['task' => $task->id]) }}" method="post">
         {{-- csrfはユーザーをCSRF（cross-site request forgery）攻撃から守る
              CSRFは必ず全てのフォームに記述した方が良い。--}}
         @csrf
