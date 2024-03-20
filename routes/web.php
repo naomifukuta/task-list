@@ -3,6 +3,7 @@
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use App\Http\Requests\TaskRequest;
 use Illuminate\Support\Facades\Route;
 
 
@@ -70,60 +71,45 @@ Route::get('/tasks/{task}',function(Task $task) {
 
 // Request $request を使用する場合クラスをインポートする必要がある
 // Request $request を使用することで送られてきたデータをアクセスすることができる。
-Route::post('/tasks',function(Request $request){
-  //データの検証
-  $data = $request->validate([
-    // 'フォーム内のname' => '検証のルール'
-    'title' => 'required|max:255',
-    'description' => 'required',
-    'long_description' => 'required',
-    //検証に問題がなければ$dataに配列としてデータが格納される。
-    // もし不正があれば、laravelは強制的に前のページに戻ってエラーを表示する
-  ]);
+Route::post('/tasks',function(TaskRequest $request){
+  //データの検証とデータにアクセスするため
+  
+ 
 
-  // 新しいタスクを作成
-  //クラスをインポートされていればクラス名だけで記述可能。
-  //$task = new App\Models\Task; を下のように記述可能
 
   // モデルのTaskクラスをインスタンス化
-  $task = new Task;
-  // タスクのプロパティをセット
-  // $data['title']をモデルのTaskクラスにtitleって名前で格納。
-  $task->title = $data['title'];
-  $task->description = $data['description'];
-  $task->long_description = $data['long_description'];
+  // $task = new Task;
+  // // タスクのプロパティをセット
+  // // $data['title']をモデルのTaskクラスにtitleって名前で格納。
+  // $task->title = $data['title'];
+  // $task->description = $data['description'];
+  // $task->long_description = $data['long_description'];
 
   // save() メソッドは、Eloquent モデルの新しいレコードをデータベースに保存する場合や、既存のレコードの変更を保存する場合に使用されます。
-  $task->save();
+  // $task->save();
+  $task = Task::create($data = $request->validated());
+
+
+
   //tasks.show という名前のルートにリダイレクトしている
-  return redirect()->route('tasks.show',['id' => $task->id])
+  return redirect()->route('tasks.show',['task' => $task->id])
   // ↑が実行されたらflash messageを表示
   // ->with('success', 'Task created successfully') は、リダイレクト先のビューに success キーでメッセージをセットしています。これにより、ビューで session('success') を使用してメッセージを取得できます。
   ->with('success','Task created successfully');
 })->name('tasks.store');
 
 
-Route::put('/tasks/{task}', function(Task $task, Request $request) {
-  // データの検証
-  $data = $request->validate([
-      'title' => 'required|max:255',
-      'description' => 'required',
-      'long_description' => 'required',
-  ]);
 
-  // // タスクを取得し、存在しない場合は404エラーを返す
-  // $task = Task::findOrFail($id);
 
-  // タスクの各フィールドに新しい値を設定
-  $task->title = $data['title'];
-  $task->description = $data['description'];
-  $task->long_description = $data['long_description'];
 
-  // 変更を保存し、データベースを更新
-  $task->save();
 
+
+Route::put('/tasks/{task}', function(Task $task, TaskRequest $request) {
+
+  $task->update($request->validated());
   // タスクの詳細を表示するためのルートにリダイレクトし、成功のフラッシュメッセージをセット
-  return redirect()->route('tasks.show', ['id' => $task->id])->with('success', 'Task updated successfully');
+  return redirect()->route('tasks.show', ['task' => $task->id])
+  ->with('success', 'Task updated successfully');
 })->name('tasks.update');
 
 
