@@ -114,7 +114,13 @@ Route::put('/tasks/{task}', function(Task $task, TaskRequest $request) {
 
 
 
+//削除
+Route::delete('/tasks/{task}',function(Task $task){
+  $task->delete();
 
+  return redirect()->route('tasks.index')
+  ->with('success','Task deleted successfully');
+})->name('tasks.destroy');
 
 
 
